@@ -2,7 +2,9 @@ import Adv from '../lib/components/adv/Adv';
 import AdvManager from '../lib/utils/adv-manager/AdvManager';
 
 function App() {
-  AdvManager.init(true);
+  AdvManager.init({
+    advConf: { divId: 'div-gpt-ad-1713536623572', path: '/234290497/next-retail-media-multisize', sizeMap: [400, 90], refreshTime: 20 },
+  });
   return (
     <div>
       {Array.from({ length: 100 }, (_, i) => i).map((iii, i) => {
@@ -43,12 +45,16 @@ function App() {
                 key={i}
                 appendDivId={['div', `${i + 1}`]}
                 appendPath={['div', `${i + 1}`]}
-                advConf={{
-                  divId: 'div-gpt-ad-1713536623572',
-                  path: '/234290497/next-retail-media-multisize',
-                  sizeMap: [728, 90],
-                  refreshTime: 20,
-                }}
+                advConf={
+                  i == 2
+                    ? {
+                        divId: 'div-gpt-ad-1713536623572',
+                        path: '/234290497/next-retail-media-multisize',
+                        sizeMap: [728, 90],
+                        refreshTime: 20,
+                      }
+                    : undefined
+                }
                 defaultTargetingParams={{
                   flyerId: '1174245',
                   retailerId: '656',

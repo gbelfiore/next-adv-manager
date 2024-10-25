@@ -1,5 +1,6 @@
 import { IDefaultTargetingParams } from '../../components/adv/Adv.tyeps';
 import { useAppStore } from '../../state/app';
+import { AdvManagerProps } from './AdvManager.types';
 
 declare global {
   interface Window {
@@ -8,7 +9,7 @@ declare global {
 }
 
 class AdvManager {
-  private static initConfiguration(isCookieAccepted: boolean) {
+  public static init(props: AdvManagerProps) {
     const existsScript = document.querySelector("[data-type='gpt_script']");
 
     if (!existsScript) {
@@ -23,21 +24,31 @@ class AdvManager {
 
       window.googletag = window.googletag || { cmd: [] };
 
-      useAppStore.getState().actions.setGptInit(true);
-    }
-
-    window.googletag.cmd.push(() => {
-      // window.googletag.pubads().enableLazyLoad()
-      // window.googletag.pubads().enableSingleRequest()
-      window.googletag.pubads().setPrivacySettings({
-        nonPersonalizedAds: !isCookieAccepted,
+      window.googletag.cmd.push(() => {
+        props.enableLazyLoadConfig && window.googletag.pubads().enableLazyLoad(props.enableLazyLoadConfig);
+        props.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
+        props.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
+        window.googletag.enableServices();
       });
-      window.googletag.enableServices();
-    });
+
+      useAppStore.getState().actions.init({ gptInit: true, ...props });
+    }
   }
 
-  public static init(isCookieAccepted: boolean) {
-    AdvManager.initConfiguration(isCookieAccepted);
+  public static update(props: AdvManagerProps) {
+    const existsScript = document.querySelector("[data-type='gpt_script']");
+    if (!existsScript) {
+      AdvManager.init(props);
+    } else {
+      window.googletag.cmd.push(() => {
+        props.enableLazyLoadConfig && window.googletag.pubads().enableLazyLoad(props.enableLazyLoadConfig);
+        props.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
+        props.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
+        window.googletag.enableServices();
+      });
+
+      useAppStore.getState().actions.update(props);
+    }
   }
 
   public static getSlot(advUnitPath: string) {
@@ -70,8 +81,8 @@ class AdvManager {
     sizeMap: [number, number],
     {
       defaultTargetingParams,
-      otherTargetingParams,
-    }: { defaultTargetingParams?: IDefaultTargetingParams; otherTargetingParams?: Record<string, string> }
+      additionalTargetingParams,
+    }: { defaultTargetingParams?: IDefaultTargetingParams; additionalTargetingParams?: Record<string, string> }
   ) {
     window.googletag.cmd.push(() => {
       let slot = AdvManager.getSlot(advUnitPath);
@@ -95,9 +106,9 @@ class AdvManager {
       storeId && slot.setTargeting('storeId', storeId);
 
       //--- other params ----
-      otherTargetingParams &&
-        Object.keys(otherTargetingParams).forEach((key) => {
-          const value = otherTargetingParams[key];
+      additionalTargetingParams &&
+        Object.keys(additionalTargetingParams).forEach((key) => {
+          const value = additionalTargetingParams[key];
           slot.setTargeting(key, value);
         });
 

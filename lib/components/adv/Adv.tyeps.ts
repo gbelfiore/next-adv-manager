@@ -17,11 +17,11 @@ interface IDefaultTargetingParams {
 }
 
 interface AdvProps {
-  advConf: IAdvConf;
+  advConf?: IAdvConf;
   appendDivId?: Array<string>;
   appendPath?: Array<string>;
   defaultTargetingParams?: IDefaultTargetingParams;
-  otherTargetingParams?: Record<string, string>;
+  additionalTargetingParams?: Record<string, string>;
 }
 
 export type { IAdvConf, AdvProps, IDefaultTargetingParams };
