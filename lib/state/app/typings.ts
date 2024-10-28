@@ -4,6 +4,10 @@ import { AdvManagerConf, AdvManagerProps } from '../../utils/adv-manager/AdvMana
 interface IApp extends AdvManagerConf {
   gptInit: boolean;
   advConf?: IAdvConf;
+  privacySettings?: Record<string, any>;
+  enableLazyLoadConfig?: { fetchMarginPercent: number; mobileScaling: number; renderMarginPercent: number };
+  enableSingleRequest?: boolean;
+
   actions: IAppActions;
 }
 

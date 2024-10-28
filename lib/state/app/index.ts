@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { IApp } from './typings';
 import { AdvManagerConf, AdvManagerProps } from '../../utils/adv-manager/AdvManager.types';
 import { IAdvConf } from '../../components/adv/Adv.tyeps';
+import { mergeObjectsOverwriteNullUndefined } from '../../utils/object-utils/ObjectUtils';
 
 const useAppStore = create<IApp>()((set) => ({
   gptInit: false,
@@ -16,7 +17,7 @@ const useAppStore = create<IApp>()((set) => ({
       return set(initData);
     },
     update: (updateData: AdvManagerConf) => {
-      return set((state) => ({ ...state, ...updateData }));
+      return set((state) => mergeObjectsOverwriteNullUndefined(state, updateData));
     },
     setGptInit: (gptInit: boolean) => {
       return set({ gptInit });
