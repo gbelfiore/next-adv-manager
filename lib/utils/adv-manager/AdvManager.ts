@@ -10,9 +10,10 @@ declare global {
 
 class AdvManager {
   public static init(props: AdvManagerProps) {
-    const existsScript = document.querySelector("[data-type='gpt_script']");
+    window.googletag = window.googletag || { cmd: [] };
 
-    if (!existsScript) {
+    const existsScript = document.querySelector("[data-type='gpt_script']");
+    if (!existsScript || !useAppStore.getState().gptInit) {
       const gptUrl = 'https://securepubads.g.doubleclick.net/tag/js/gpt.js';
 
       const script = document.createElement('script');
@@ -22,16 +23,16 @@ class AdvManager {
       script.dataset.type = 'gpt_script';
       document.head.appendChild(script);
 
-      window.googletag = window.googletag || { cmd: [] };
+      script.onload = function () {
+        window.googletag.cmd.push(() => {
+          props.enableLazyLoadConfig && window.googletag.pubads().enableLazyLoad(props.enableLazyLoadConfig);
+          props.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
+          props.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
+          window.googletag.enableServices();
+        });
 
-      window.googletag.cmd.push(() => {
-        props.enableLazyLoadConfig && window.googletag.pubads().enableLazyLoad(props.enableLazyLoadConfig);
-        props.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
-        props.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
-        window.googletag.enableServices();
-      });
-
-      useAppStore.getState().actions.init({ gptInit: true, ...props });
+        useAppStore.getState().actions.init({ gptInit: true, ...props });
+      };
     }
   }
 
@@ -87,9 +88,7 @@ class AdvManager {
     window.googletag.cmd.push(() => {
       let slot = AdvManager.getSlot(advUnitPath);
       if (slot) {
-        window.googletag?.cmd.push(() => {
-          window.googletag.destroySlots([slot]);
-        });
+        window.googletag.destroySlots([slot]);
       }
 
       slot = window.googletag.defineSlot(advUnitPath, sizeMap, advId)?.setForceSafeFrame(true)?.addService(window.googletag.pubads());

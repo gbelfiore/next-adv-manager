@@ -43,11 +43,9 @@ function App() {
             <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
               <Adv
                 key={i}
-                appendDivId={['div', `${i + 1}`]}
-                appendPath={['div', `${i + 1}`]}
                 advConf={{
-                  divId: 'div-gpt-ad-1713536623572',
-                  path: '/234290497/next-retail-media-multisize',
+                  divId: `div-gpt-ad-1713536623572-div-${i + 1}`,
+                  path: `/234290497/next-retail-media-multisize/div/${i + 1}`,
                   sizeMap: i % 2 == 0 ? [300, 250] : [728, 90],
                   refreshTime: 20,
                 }}

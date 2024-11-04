@@ -3,7 +3,7 @@ import { AdvProps } from './Adv.tyeps';
 import AdvManager from '../../utils/adv-manager/AdvManager';
 import { useAppStore } from '../../state/app';
 
-const Adv = ({ advConf, appendDivId, appendPath, defaultTargetingParams, additionalTargetingParams }: AdvProps) => {
+const Adv = ({ advConf, defaultTargetingParams, additionalTargetingParams }: AdvProps) => {
   const gptInit = useAppStore((state) => state.gptInit);
   const advRef = useRef<HTMLDivElement>(null);
   const interval = useRef<NodeJS.Timeout>();
@@ -11,29 +11,23 @@ const Adv = ({ advConf, appendDivId, appendPath, defaultTargetingParams, additio
   const advConfGeneric = useAppStore((state) => state.advConf);
 
   const advId = useMemo(() => {
-    let advId = advConf?.divId || advConfGeneric?.divId;
+    const advId = advConf?.divId || advConfGeneric?.divId;
     if (!advId) return null;
-    appendDivId?.forEach((elem) => {
-      advId += `-${elem}`;
-    });
+
     return advId;
-  }, [advConf?.divId, advConfGeneric?.divId, appendDivId]);
+  }, [advConf?.divId, advConfGeneric?.divId]);
 
   const advUnitPath = useMemo(() => {
-    let advUnitPath = advConf?.path || advConfGeneric?.path;
+    const advUnitPath = advConf?.path || advConfGeneric?.path;
     if (!advUnitPath) return null;
-    appendPath?.forEach((elem) => {
-      advUnitPath += `/${elem}`;
-    });
+
     return advUnitPath;
-  }, [advConf?.path, advConfGeneric?.path, appendPath]);
+  }, [advConf?.path, advConfGeneric?.path]);
 
   const sizeMap = useMemo(() => {
     const sizeMap = advConf?.sizeMap || advConfGeneric?.sizeMap;
     return sizeMap;
   }, [advConf?.sizeMap, advConfGeneric?.sizeMap]);
-
-  console.log({ advId, advUnitPath, sizeMap });
 
   const setIntervalRefresh = useCallback(() => {
     const refreshTime = advConf?.refreshTime || advConfGeneric?.refreshTime;
@@ -43,14 +37,6 @@ const Adv = ({ advConf, appendDivId, appendPath, defaultTargetingParams, additio
       }, refreshTime * 1000);
     }
   }, [advConf?.refreshTime, advConfGeneric?.refreshTime, advUnitPath]);
-
-  // useEffect(() => {
-  //   if (!gptInit) return;
-  //   setIntervalRefresh();
-  //   return () => {
-  //     clearInterval(interval.current);
-  //   };
-  // }, [gptInit, setIntervalRefresh]);
 
   const defineSlot = useCallback(() => {
     if (!advUnitPath || !advId || !sizeMap) return null;

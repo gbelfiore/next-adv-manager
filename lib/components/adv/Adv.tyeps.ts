@@ -18,8 +18,6 @@ interface IDefaultTargetingParams {
 
 interface AdvProps {
   advConf?: IAdvConf;
-  appendDivId?: Array<string>;
-  appendPath?: Array<string>;
   defaultTargetingParams?: IDefaultTargetingParams;
   additionalTargetingParams?: Record<string, string>;
 }
