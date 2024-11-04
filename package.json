@@ -2,16 +2,19 @@
   "name": "next-adv-manager",
   "author": "g.belfiore",
   "private": false,
-  "version": "0.1.0",
+  "version": "0.1.1test",
   "type": "module",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gbelfiore/next-adv-manager.git"
+    "url": "git+https://github.com/gbelfiore/sf-retail-media-library.git"
   },
   "sideEffects": [
     "**/*.css"
