@@ -1,13 +1,7 @@
-import { IAdvConf } from '../../components/adv/Adv.tyeps';
-import { AdvManagerConf, AdvManagerProps } from '../../utils/adv-manager/AdvManager.types';
+import { AdvManagerConf, AdvManagerProps, AdvManagerSlotsConf } from '../../utils/adv-manager/AdvManager.types';
 
-interface IApp extends AdvManagerConf {
+interface IApp extends AdvManagerProps {
   gptInit: boolean;
-  advConf?: IAdvConf;
-  privacySettings?: Record<string, any>;
-  enableLazyLoadConfig?: { fetchMarginPercent: number; mobileScaling: number; renderMarginPercent: number };
-  enableSingleRequest?: boolean;
-
   actions: IAppActions;
 }
 
@@ -18,7 +12,7 @@ interface IAppActions {
   setPrivacySettings: (privacySettings?: Record<string, any>) => void;
   setEnableLazyLoadConfig: (enableLazyLoadConfig?: { fetchMarginPercent: number; mobileScaling: number; renderMarginPercent: number }) => void;
   setEnableSingleRequest: (enableSingleRequest?: boolean) => void;
-  setAdvConf: (advConf?: IAdvConf) => void;
+  setAdvConf: (advConf?: AdvManagerSlotsConf) => void;
 }
 
 export type { IApp, IAppActions };

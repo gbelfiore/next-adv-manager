@@ -9,5 +9,5 @@ export type { IAdvConf, AdvProps, IDefaultTargetingParams };
 import AdvManager from './utils/adv-manager/AdvManager';
 export { AdvManager };
 
-import { AdvManagerProps, AdvManagerConf } from './utils/adv-manager/AdvManager.types';
-export type { AdvManagerProps, AdvManagerConf };
+import { AdvManagerProps, AdvManagerConf, AdvManagerSlotsConf } from './utils/adv-manager/AdvManager.types';
+export type { AdvManagerProps, AdvManagerConf, AdvManagerSlotsConf };

@@ -1,8 +1,7 @@
 'use client';
 import { create } from 'zustand';
 import { IApp } from './typings';
-import { AdvManagerConf, AdvManagerProps } from '../../utils/adv-manager/AdvManager.types';
-import { IAdvConf } from '../../components/adv/Adv.tyeps';
+import { AdvManagerConf, AdvManagerProps, AdvManagerSlotsConf } from '../../utils/adv-manager/AdvManager.types';
 import { mergeObjectsOverwriteNullUndefined } from '../../utils/object-utils/ObjectUtils';
 
 const useAppStore = create<IApp>()((set) => ({
@@ -31,7 +30,7 @@ const useAppStore = create<IApp>()((set) => ({
     setEnableSingleRequest: (enableSingleRequest?: boolean) => {
       return set({ enableSingleRequest });
     },
-    setAdvConf: (advConf?: IAdvConf) => {
+    setAdvConf: (advConf?: AdvManagerSlotsConf) => {
       return set({ advConf });
     },
   },

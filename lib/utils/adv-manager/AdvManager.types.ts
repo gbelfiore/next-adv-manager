@@ -5,8 +5,13 @@ interface AdvManagerConf {
   enableLazyLoadConfig?: { fetchMarginPercent: number; mobileScaling: number; renderMarginPercent: number };
   enableSingleRequest?: boolean;
 }
-interface AdvManagerProps extends AdvManagerConf {
-  advConf?: IAdvConf;
+
+interface AdvManagerSlotsConf extends Omit<IAdvConf, 'sizeMap'> {
+  sizeMap?: [number, number]; // `sizeMap` è opzionale qui
 }
 
-export type { AdvManagerProps, AdvManagerConf };
+interface AdvManagerProps extends AdvManagerConf {
+  advConf?: AdvManagerSlotsConf;
+}
+
+export type { AdvManagerProps, AdvManagerConf, AdvManagerSlotsConf };
