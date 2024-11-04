@@ -3,7 +3,7 @@ import AdvManager from '../lib/utils/adv-manager/AdvManager';
 
 function App() {
   AdvManager.init({
-    advConf: { divId: 'div-gpt-ad-1713536623572', path: '/234290497/next-retail-media-multisize', sizeMap: [400, 90], refreshTime: 20 },
+    advConf: { divId: 'div-gpt-ad-1713536623572', path: '/234290497/next-retail-media-multisize', sizeMap: [728, 90], refreshTime: 20 },
   });
   return (
     <div>
