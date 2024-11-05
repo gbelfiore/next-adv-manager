@@ -1,6 +1,8 @@
 interface IAdvConf {
-  divId: string;
-  path: string;
+  divId?: string;
+  path?: string;
+  specializationDivId: string;
+  specializationPath: string;
   sizeMap: [number, number];
   refreshTime?: number;
 }

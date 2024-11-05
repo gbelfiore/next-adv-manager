@@ -6,8 +6,8 @@ interface AdvManagerConf {
   enableSingleRequest?: boolean;
 }
 
-interface AdvManagerSlotsConf extends Omit<IAdvConf, 'sizeMap'> {
-  sizeMap?: [number, number]; // `sizeMap` è opzionale qui
+interface AdvManagerSlotsConf extends Omit<IAdvConf, 'sizeMap' | 'specializationDivId' | 'specializationPath'> {
+  sizeMap?: [number, number];
 }
 
 interface AdvManagerProps extends AdvManagerConf {

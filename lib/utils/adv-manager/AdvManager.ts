@@ -9,7 +9,7 @@ declare global {
 }
 
 class AdvManager {
-  public static init(props: AdvManagerProps) {
+  public static init(props: AdvManagerProps = {}) {
     window.googletag = window.googletag || { cmd: [] };
 
     const existsScript = document.querySelector("[data-type='gpt_script']");
@@ -25,9 +25,9 @@ class AdvManager {
 
       script.onload = function () {
         window.googletag.cmd.push(() => {
-          props.enableLazyLoadConfig && window.googletag.pubads().enableLazyLoad(props.enableLazyLoadConfig);
-          props.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
-          props.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
+          props?.enableLazyLoadConfig && window.googletag.pubads().enableLazyLoad(props.enableLazyLoadConfig);
+          props?.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
+          props?.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
           window.googletag.enableServices();
         });
 

@@ -11,18 +11,24 @@ const Adv = ({ advConf, defaultTargetingParams, additionalTargetingParams }: Adv
   const advConfGeneric = useAppStore((state) => state.advConf);
 
   const advId = useMemo(() => {
-    const advId = advConf?.divId || advConfGeneric?.divId;
+    if (!advConf?.specializationDivId) return null;
+    let advId = advConf?.divId || advConfGeneric?.divId;
+    advId += `-${advConf.specializationDivId}`;
     if (!advId) return null;
 
     return advId;
-  }, [advConf?.divId, advConfGeneric?.divId]);
+  }, [advConf?.divId, advConf?.specializationDivId, advConfGeneric?.divId]);
 
   const advUnitPath = useMemo(() => {
-    const advUnitPath = advConf?.path || advConfGeneric?.path;
+    if (!advConf?.specializationPath) return null;
+
+    let advUnitPath = advConf?.path || advConfGeneric?.path;
+    advUnitPath += `/${advConf.specializationPath}`;
+
     if (!advUnitPath) return null;
 
     return advUnitPath;
-  }, [advConf?.path, advConfGeneric?.path]);
+  }, [advConf?.path, advConf?.specializationPath, advConfGeneric?.path]);
 
   const sizeMap = useMemo(() => {
     const sizeMap = advConf?.sizeMap || advConfGeneric?.sizeMap;
@@ -65,7 +71,7 @@ const Adv = ({ advConf, defaultTargetingParams, additionalTargetingParams }: Adv
     };
   }, [sizeMap]);
 
-  if (!gptInit || !advId || !advUnitPath || !sizeMap) return <div>ciaooooooo</div>;
+  if (!gptInit || !advId || !advUnitPath || !sizeMap) return null;
   return <div id={advId} key={advId} ref={advRef} style={getStyle}></div>;
 };
 
