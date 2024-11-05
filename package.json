@@ -1,8 +1,8 @@
 {
-  "name": "next-adv-manager",
+  "name": "sf-retail-media-library",
   "author": "g.belfiore",
   "private": false,
-  "version": "0.1.0",
+  "version": "1.2.0",
   "type": "module",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gbelfiore/next-adv-manager.git"
+    "url": "git+https://github.com/gbelfiore/sf-retail-media-library.git"
   },
   "sideEffects": [
     "**/*.css"
@@ -25,7 +25,7 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "zustand": "^5.0.0"
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@types/node": "^22.5.4",

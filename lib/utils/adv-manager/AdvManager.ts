@@ -1,5 +1,6 @@
 import { IDefaultTargetingParams } from '../../components/adv/Adv.tyeps';
 import { useAppStore } from '../../state/app';
+import { AdvManagerProps } from './AdvManager.types';
 
 declare global {
   interface Window {
@@ -8,10 +9,11 @@ declare global {
 }
 
 class AdvManager {
-  private static initConfiguration(isCookieAccepted: boolean) {
-    const existsScript = document.querySelector("[data-type='gpt_script']");
+  public static init(props: AdvManagerProps = {}) {
+    window.googletag = window.googletag || { cmd: [] };
 
-    if (!existsScript) {
+    const existsScript = document.querySelector("[data-type='gpt_script']");
+    if (!existsScript || !useAppStore.getState().gptInit) {
       const gptUrl = 'https://securepubads.g.doubleclick.net/tag/js/gpt.js';
 
       const script = document.createElement('script');
@@ -21,23 +23,33 @@ class AdvManager {
       script.dataset.type = 'gpt_script';
       document.head.appendChild(script);
 
-      window.googletag = window.googletag || { cmd: [] };
+      script.onload = function () {
+        window.googletag.cmd.push(() => {
+          props?.enableLazyLoadConfig && window.googletag.pubads().enableLazyLoad(props.enableLazyLoadConfig);
+          props?.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
+          props?.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
+          window.googletag.enableServices();
+        });
 
-      useAppStore.getState().actions.setGptInit(true);
+        useAppStore.getState().actions.init({ gptInit: true, ...props });
+      };
     }
-
-    window.googletag.cmd.push(() => {
-      // window.googletag.pubads().enableLazyLoad()
-      // window.googletag.pubads().enableSingleRequest()
-      window.googletag.pubads().setPrivacySettings({
-        nonPersonalizedAds: !isCookieAccepted,
-      });
-      window.googletag.enableServices();
-    });
   }
 
-  public static init(isCookieAccepted: boolean) {
-    AdvManager.initConfiguration(isCookieAccepted);
+  public static update(props: AdvManagerProps) {
+    const existsScript = document.querySelector("[data-type='gpt_script']");
+    if (!existsScript) {
+      AdvManager.init(props);
+    } else {
+      window.googletag.cmd.push(() => {
+        props.enableLazyLoadConfig && window.googletag.pubads().enableLazyLoad(props.enableLazyLoadConfig);
+        props.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
+        props.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
+        window.googletag.enableServices();
+      });
+
+      useAppStore.getState().actions.update(props);
+    }
   }
 
   public static getSlot(advUnitPath: string) {
@@ -70,15 +82,13 @@ class AdvManager {
     sizeMap: [number, number],
     {
       defaultTargetingParams,
-      otherTargetingParams,
-    }: { defaultTargetingParams?: IDefaultTargetingParams; otherTargetingParams?: Record<string, string> }
+      additionalTargetingParams,
+    }: { defaultTargetingParams?: IDefaultTargetingParams; additionalTargetingParams?: Record<string, string> }
   ) {
     window.googletag.cmd.push(() => {
       let slot = AdvManager.getSlot(advUnitPath);
       if (slot) {
-        window.googletag?.cmd.push(() => {
-          window.googletag.destroySlots([slot]);
-        });
+        window.googletag.destroySlots([slot]);
       }
 
       slot = window.googletag.defineSlot(advUnitPath, sizeMap, advId)?.setForceSafeFrame(true)?.addService(window.googletag.pubads());
@@ -95,9 +105,9 @@ class AdvManager {
       storeId && slot.setTargeting('storeId', storeId);
 
       //--- other params ----
-      otherTargetingParams &&
-        Object.keys(otherTargetingParams).forEach((key) => {
-          const value = otherTargetingParams[key];
+      additionalTargetingParams &&
+        Object.keys(additionalTargetingParams).forEach((key) => {
+          const value = additionalTargetingParams[key];
           slot.setTargeting(key, value);
         });
 

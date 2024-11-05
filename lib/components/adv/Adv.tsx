@@ -3,62 +3,75 @@ import { AdvProps } from './Adv.tyeps';
 import AdvManager from '../../utils/adv-manager/AdvManager';
 import { useAppStore } from '../../state/app';
 
-const Adv = ({ advConf, appendDivId, appendPath, defaultTargetingParams, otherTargetingParams }: AdvProps) => {
+const Adv = ({ advConf, defaultTargetingParams, additionalTargetingParams }: AdvProps) => {
   const gptInit = useAppStore((state) => state.gptInit);
   const advRef = useRef<HTMLDivElement>(null);
   const interval = useRef<NodeJS.Timeout>();
 
+  const advConfGeneric = useAppStore((state) => state.advConf);
+
   const advId = useMemo(() => {
-    let advId = advConf.divId;
-    appendDivId?.forEach((elem) => {
-      advId += `-${elem}`;
-    });
+    if (!advConf?.specializationDivId) return null;
+    let advId = advConf?.divId || advConfGeneric?.divId;
+    advId += `-${advConf.specializationDivId}`;
+    if (!advId) return null;
+
     return advId;
-  }, [advConf.divId, appendDivId]);
+  }, [advConf?.divId, advConf?.specializationDivId, advConfGeneric?.divId]);
 
   const advUnitPath = useMemo(() => {
-    let advUnitPath = advConf.path;
-    appendPath?.forEach((elem) => {
-      advUnitPath += `/${elem}`;
-    });
+    if (!advConf?.specializationPath) return null;
+
+    let advUnitPath = advConf?.path || advConfGeneric?.path;
+    advUnitPath += `/${advConf.specializationPath}`;
+
+    if (!advUnitPath) return null;
+
     return advUnitPath;
-  }, [advConf.path, appendPath]);
+  }, [advConf?.path, advConf?.specializationPath, advConfGeneric?.path]);
+
+  const sizeMap = useMemo(() => {
+    const sizeMap = advConf?.sizeMap || advConfGeneric?.sizeMap;
+    return sizeMap;
+  }, [advConf?.sizeMap, advConfGeneric?.sizeMap]);
 
   const setIntervalRefresh = useCallback(() => {
-    if (advConf.refreshTime != undefined && advConf.refreshTime > 0) {
+    const refreshTime = advConf?.refreshTime || advConfGeneric?.refreshTime;
+    if (refreshTime != undefined && refreshTime > 0 && advUnitPath) {
       interval.current = setInterval(() => {
         AdvManager.refreshSlot(advUnitPath);
-      }, advConf.refreshTime * 1000);
+      }, refreshTime * 1000);
     }
-  }, [advConf.refreshTime, advUnitPath]);
-
-  useEffect(() => {
-    if (!gptInit) return;
-    setIntervalRefresh();
-    return () => {
-      clearInterval(interval.current);
-    };
-  }, [gptInit, setIntervalRefresh]);
+  }, [advConf?.refreshTime, advConfGeneric?.refreshTime, advUnitPath]);
 
   const defineSlot = useCallback(() => {
-    AdvManager.defineSlot(advUnitPath, advId, advConf.sizeMap, {
+    if (!advUnitPath || !advId || !sizeMap) return null;
+    AdvManager.defineSlot(advUnitPath, advId, sizeMap, {
       defaultTargetingParams,
-      otherTargetingParams,
+      additionalTargetingParams,
     });
-  }, [advConf.sizeMap, advId, advUnitPath, defaultTargetingParams, otherTargetingParams]);
+  }, [advUnitPath, advId, sizeMap, defaultTargetingParams, additionalTargetingParams]);
 
   useEffect(() => {
-    if (gptInit) defineSlot();
-  }, [defineSlot, gptInit]);
+    if (gptInit) {
+      defineSlot();
+      setIntervalRefresh();
+      return () => {
+        clearInterval(interval.current);
+      };
+    }
+  }, [defineSlot, gptInit, setIntervalRefresh]);
 
   const getStyle = useMemo((): CSSProperties => {
-    return {
-      width: advConf.sizeMap[0],
-      height: advConf.sizeMap[1],
-    };
-  }, [advConf.sizeMap]);
+    if (!sizeMap) return {};
 
-  if (!gptInit) return false;
+    return {
+      width: sizeMap[0],
+      height: sizeMap[1],
+    };
+  }, [sizeMap]);
+
+  if (!gptInit || !advId || !advUnitPath || !sizeMap) return null;
   return <div id={advId} key={advId} ref={advRef} style={getStyle}></div>;
 };
 

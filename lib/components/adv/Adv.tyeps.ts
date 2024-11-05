@@ -1,6 +1,8 @@
 interface IAdvConf {
-  divId: string;
-  path: string;
+  divId?: string;
+  path?: string;
+  specializationDivId: string;
+  specializationPath: string;
   sizeMap: [number, number];
   refreshTime?: number;
 }
@@ -17,11 +19,9 @@ interface IDefaultTargetingParams {
 }
 
 interface AdvProps {
-  advConf: IAdvConf;
-  appendDivId?: Array<string>;
-  appendPath?: Array<string>;
+  advConf?: IAdvConf;
   defaultTargetingParams?: IDefaultTargetingParams;
-  otherTargetingParams?: Record<string, string>;
+  additionalTargetingParams?: Record<string, string>;
 }
 
 export type { IAdvConf, AdvProps, IDefaultTargetingParams };
