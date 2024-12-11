@@ -1,13 +1,47 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + React + TS</title>
+</head>
+
+<body>
+
+
+  <div data-sf-adv="true" data-div-id="div-gpt-ad-1713536623572" data-path="/234290497/next-retail-media-multisize"
+    data-size="[728,90]" data-refresh-time="20" data-append-div-id='["div","100"]' data-append-path='["div","100"]'
+    data-targeting-params='{"flyerId":"1174245","retailerId":"656","host":"https://next.doveconviene.it/unieuro","aaaa":"1","bbbb":"2","cccc":"3"}'>
+    aaaa
+  </div>
+
+  <div data-sf-adv="true" data-div-id="div-gpt-ad-1713536623572" data-path="/234290497/next-retail-media-multisize"
+    data-size="[728,90]" data-refresh-time="20" data-append-div-id='["div","99"]' data-append-path='["div","99"]'
+    data-targeting-params='{"flyerId":"1174245","retailerId":"656","host":"https://next.doveconviene.it/unieuro","aaaa":"1","bbbb":"2","cccc":"3"}'>
+    bbbb
+  </div>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+
+  <script>
+    let count = 3
+    setInterval(() => {
+      const next = count++
+      const newDiv = document.createElement('div');
+      newDiv.setAttribute('data-sf-adv', 'true');
+      newDiv.setAttribute('data-div-id', 'div-gpt-ad-1713536623572');
+      newDiv.setAttribute('data-path', '/234290497/next-retail-media-multisize');
+      newDiv.setAttribute('data-size', '[728,90]');
+      newDiv.setAttribute('data-refresh-time', '20');
+      newDiv.setAttribute('data-append-div-id', `["div","${next}"]`);
+      newDiv.setAttribute('data-append-path', `["div","${next}"]`);
+      newDiv.setAttribute('data-targeting-params', '{"flyerId":"1174245","retailerId":"656","host":"https://next.doveconviene.it/unieuro","aaaa":"1","bbbb":"2","cccc":"3"}');
+      newDiv.innerHTML = `div ${next}`;
+      document.body.appendChild(newDiv);
+    }, 2000);
+  </script>
+</body>
+
 </html>

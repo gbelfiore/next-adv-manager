@@ -3,7 +3,7 @@ import { AdvProps } from './Adv.tyeps';
 import AdvManager from '../../utils/adv-manager/AdvManager';
 import { useAppStore } from '../../state/app';
 
-const Adv = ({ advConf, appendDivId, appendPath, defaultTargetingParams, additionalTargetingParams }: AdvProps) => {
+const Adv = ({ advConf, appendDivId, appendPath, targetingParams }: AdvProps) => {
   const gptInit = useAppStore((state) => state.gptInit);
   const advRef = useRef<HTMLDivElement>(null);
   const interval = useRef<NodeJS.Timeout>();
@@ -33,8 +33,6 @@ const Adv = ({ advConf, appendDivId, appendPath, defaultTargetingParams, additio
     return sizeMap;
   }, [advConf?.sizeMap, advConfGeneric?.sizeMap]);
 
-  console.log({ advId, advUnitPath, sizeMap });
-
   const setIntervalRefresh = useCallback(() => {
     const refreshTime = advConf?.refreshTime || advConfGeneric?.refreshTime;
     if (refreshTime != undefined && refreshTime > 0 && advUnitPath) {
@@ -54,11 +52,8 @@ const Adv = ({ advConf, appendDivId, appendPath, defaultTargetingParams, additio
 
   const defineSlot = useCallback(() => {
     if (!advUnitPath || !advId || !sizeMap) return null;
-    AdvManager.defineSlot(advUnitPath, advId, sizeMap, {
-      defaultTargetingParams,
-      additionalTargetingParams,
-    });
-  }, [advUnitPath, advId, sizeMap, defaultTargetingParams, additionalTargetingParams]);
+    AdvManager.defineSlot(advUnitPath, advId, sizeMap, targetingParams);
+  }, [advUnitPath, advId, sizeMap, targetingParams]);
 
   useEffect(() => {
     if (gptInit) {

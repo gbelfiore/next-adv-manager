@@ -1,5 +1,5 @@
-import { IDefaultTargetingParams } from '../../components/adv/Adv.tyeps';
 import { useAppStore } from '../../state/app';
+import AdvSearch from '../adv-search/AdvSearch';
 import { AdvManagerProps } from './AdvManager.types';
 
 declare global {
@@ -9,7 +9,7 @@ declare global {
 }
 
 class AdvManager {
-  public static init(props: AdvManagerProps) {
+  public static init(props: AdvManagerProps, isMutationObserver?: boolean) {
     const existsScript = document.querySelector("[data-type='gpt_script']");
 
     if (!existsScript) {
@@ -29,9 +29,13 @@ class AdvManager {
         props.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
         props.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
         window.googletag.enableServices();
-      });
 
-      useAppStore.getState().actions.init({ gptInit: true, ...props });
+        useAppStore.getState().actions.init({ gptInit: true, ...props });
+
+        if (isMutationObserver) {
+          AdvSearch.init();
+        }
+      });
     }
   }
 
@@ -45,9 +49,9 @@ class AdvManager {
         props.enableSingleRequest && window.googletag.pubads().enableSingleRequest();
         props.privacySettings && window.googletag.pubads().setPrivacySettings(props.privacySettings);
         window.googletag.enableServices();
-      });
 
-      useAppStore.getState().actions.update(props);
+        useAppStore.getState().actions.update(props);
+      });
     }
   }
 
@@ -75,15 +79,7 @@ class AdvManager {
     }
   }
 
-  public static defineSlot(
-    advUnitPath: string,
-    advId: string,
-    sizeMap: [number, number],
-    {
-      defaultTargetingParams,
-      additionalTargetingParams,
-    }: { defaultTargetingParams?: IDefaultTargetingParams; additionalTargetingParams?: Record<string, string> }
-  ) {
+  public static defineSlot(advUnitPath: string, advId: string, sizeMap: [number, number], targetingParams?: Record<string, string>) {
     window.googletag.cmd.push(() => {
       let slot = AdvManager.getSlot(advUnitPath);
       if (slot) {
@@ -94,21 +90,9 @@ class AdvManager {
 
       slot = window.googletag.defineSlot(advUnitPath, sizeMap, advId)?.setForceSafeFrame(true)?.addService(window.googletag.pubads());
 
-      //--- default params ----
-      const { environment, flyerId, retailerId, trafficSourceType, placement, platform, storeId, host } = defaultTargetingParams || {};
-      flyerId && slot.setTargeting('flyerId', flyerId);
-      retailerId && slot.setTargeting('retailerId', retailerId);
-      environment && slot.setTargeting('environment', environment);
-      trafficSourceType && slot.setTargeting('traffic_source_type', trafficSourceType);
-      placement && slot.setTargeting('placement', placement);
-      platform && slot.setTargeting('platform', platform);
-      host && slot.setTargeting('next-domain', host);
-      storeId && slot.setTargeting('storeId', storeId);
-
-      //--- other params ----
-      additionalTargetingParams &&
-        Object.keys(additionalTargetingParams).forEach((key) => {
-          const value = additionalTargetingParams[key];
+      targetingParams &&
+        Object.keys(targetingParams).forEach((key) => {
+          const value = targetingParams[key];
           slot.setTargeting(key, value);
         });
 
